@@ -1,0 +1,478 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f3f6fb;
+            color: #1e293b;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 255px;
+            background: #14243e;
+            color: white;
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            font-size: 21px;
+            font-weight: 700;
+            padding: 8px 12px 35px;
+        }
+
+        .sidebar-brand span {
+            color: #65a7ff;
+        }
+
+        .nav-label {
+            color: #91a2bc;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            padding: 12px;
+            font-weight: 700;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #d3deed;
+            text-decoration: none;
+            padding: 13px 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover {
+            background: #263d5e;
+            color: white;
+        }
+
+        .sidebar .active {
+            background: #2864ad;
+            color: white;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px 35px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+            color: #172b4d;
+            margin: 0;
+        }
+
+        .topbar p {
+            color: #8490a3;
+            margin: 6px 0 0;
+            font-size: 14px;
+        }
+
+        .profile-info {
+            background: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(20,40,80,0.05);
+            font-size: 13px;
+        }
+
+        .profile-info strong {
+            color: #24558e;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(115deg, #1c3d68, #3479bd);
+            color: white;
+            padding: 28px 32px;
+            border-radius: 14px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 22px rgba(36,85,142,0.15);
+        }
+
+        .welcome-banner h2 {
+            margin: 0 0 9px;
+            font-size: 23px;
+        }
+
+        .welcome-banner p {
+            margin: 0;
+            color: #dceaff;
+            font-size: 14px;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 17px;
+        }
+
+        .section-heading h2 {
+            color: #172b4d;
+            font-size: 19px;
+            margin: 0;
+        }
+
+        .section-heading span {
+            color: #8490a3;
+            font-size: 12px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            border: 1px solid #e9eef5;
+            box-shadow: 0 3px 12px rgba(20,40,80,0.04);
+            transition: 0.2s;
+        }
+
+        .summary-card:hover,
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(20,40,80,0.09);
+        }
+
+        .summary-card h3 {
+            color: #7b8798;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .summary-card .number {
+            color: #172b4d;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 13px 0 0;
+            overflow-wrap: anywhere;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .module-card {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            border: 1px solid #e9eef5;
+            box-shadow: 0 3px 12px rgba(20,40,80,0.04);
+            transition: 0.2s;
+        }
+
+        .module-card h3 {
+            color: #1e3a5f;
+            font-size: 16px;
+            margin: 0 0 9px;
+        }
+
+        .module-card p {
+            color: #7b8798;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 40px;
+            margin: 0 0 18px;
+        }
+
+        .module-card a {
+            display: inline-block;
+            color: #2864ad;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .module-card a:hover {
+            color: #14243e;
+            text-decoration: underline;
+        }
+
+        .logout-link {
+            background: #293f60;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 1050px) {
+            .summary-grid,
+            .module-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .sidebar-brand {
+                padding: 5px 8px 15px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-label {
+                width: 100%;
+            }
+
+            .sidebar a {
+                padding: 9px 11px;
+                margin: 0;
+                font-size: 12px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 10px;
+            }
+
+            .main-content {
+                padding: 20px 15px;
+            }
+
+            .summary-grid,
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 22px;
+            }
+
+            .welcome-banner {
+                padding: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            EMS<span>.</span>
+        </div>
+
+        <nav>
+            <div class="nav-label">MAIN MENU</div>
+
+            <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a>
+            <a href="{{ url_for('employees') }}">Employees</a>
+            <a href="{{ url_for('departments') }}">Departments</a>
+            <a href="{{ url_for('attendance') }}">Attendance</a>
+            <a href="{{ url_for('leave_requests') }}">Leave Requests</a>
+            <a href="{{ url_for('payroll') }}">Payroll</a>
+            <a href="{{ url_for('users') }}">User Management</a>
+
+            <div class="nav-label">REPORTS</div>
+
+            <a href="{{ url_for('employee_report') }}">Employee Reports</a>
+            <a href="{{ url_for('attendance_report') }}">Attendance Reports</a>
+            <a href="{{ url_for('leave_report') }}">Leave Reports</a>
+            <a href="{{ url_for('payroll_report') }}">Payroll Reports</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Dashboard Overview</h1>
+                <p>Welcome to your employee management workspace.</p>
+            </div>
+
+            <div class="profile-info">
+                Welcome, <strong>{{ username }}</strong>
+                &nbsp; | &nbsp; {{ role }}
+            </div>
+        </header>
+
+        <section class="welcome-banner">
+            <h2>Hello, {{ username }}!</h2>
+            <p>Manage your workforce, attendance, leave and payroll from one place.</p>
+        </section>
+
+        <div class="section-heading">
+            <h2>Key Statistics</h2>
+            <span>Current system overview</span>
+        </div>
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <h3>Total Employees</h3>
+                <p class="number">{{ total_employees }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Active Employees</h3>
+                <p class="number">{{ active_employees }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Total Departments</h3>
+                <p class="number">{{ total_departments }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Pending Leave Requests</h3>
+                <p class="number">{{ pending_leaves }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Today's Attendance</h3>
+                <p class="number">{{ today_attendance }}</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Current Month Payroll</h3>
+                <p class="number">₹{{ monthly_payroll }}</p>
+            </div>
+
+        </section>
+
+        <div class="section-heading">
+            <h2>Management Modules</h2>
+            <span>Manage daily operations</span>
+        </div>
+
+        <section class="module-grid">
+
+            <div class="module-card">
+                <h3>Employees</h3>
+                <p>Manage employee information and employment records.</p>
+                <a href="{{ url_for('employees') }}">Manage Employees →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Departments</h3>
+                <p>Organize company departments and assignments.</p>
+                <a href="{{ url_for('departments') }}">Manage Departments →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Attendance</h3>
+                <p>Track daily employee attendance and working hours.</p>
+                <a href="{{ url_for('attendance') }}">Manage Attendance →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Leave Requests</h3>
+                <p>Review, approve and manage employee leave requests.</p>
+                <a href="{{ url_for('leave_requests') }}">Manage Leave →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Payroll</h3>
+                <p>Manage salary details and employee payments.</p>
+                <a href="{{ url_for('payroll') }}">Manage Payroll →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>User Management</h3>
+                <p>Manage system accounts, usernames and user roles.</p>
+                <a href="{{ url_for('users') }}">Manage Users →</a>
+            </div>
+
+        </section>
+
+        <div class="section-heading">
+            <h2>Reports & Exports</h2>
+            <span>View and download business reports</span>
+        </div>
+
+        <section class="module-grid">
+
+            <div class="module-card">
+                <h3>Employee Reports</h3>
+                <p>View employee details and download Excel or PDF reports.</p>
+                <a href="{{ url_for('employee_report') }}">View Report →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Attendance Reports</h3>
+                <p>Review attendance records and export report files.</p>
+                <a href="{{ url_for('attendance_report') }}">View Report →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Leave Reports</h3>
+                <p>Review leave requests and their approval status.</p>
+                <a href="{{ url_for('leave_report') }}">View Report →</a>
+            </div>
+
+            <div class="module-card">
+                <h3>Payroll Reports</h3>
+                <p>Review salary, deductions and payment information.</p>
+                <a href="{{ url_for('payroll_report') }}">View Report →</a>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

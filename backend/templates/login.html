@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Employee Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="login-container">
+
+    <div class="login-left">
+        <div class="brand">
+            <div class="brand-icon">E</div>
+            <span>EMS</span>
+        </div>
+
+        <div class="welcome-content">
+            <span class="tag">SMART WORKFORCE MANAGEMENT</span>
+            <h1>Manage Your<br>People Better.</h1>
+            <p>
+                A smarter way to manage employees, track attendance,
+                handle payroll and grow your organization.
+            </p>
+        </div>
+
+        <div class="left-footer">
+            Employee Management System &copy; 2026
+        </div>
+    </div>
+
+    <div class="login-right">
+        <div class="login-card">
+
+            <div class="mobile-brand">EMS</div>
+
+            <h2>Welcome Back!</h2>
+            <p class="subtitle">Please login to your account.</p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username"
+                        placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-wrapper">
+                        <input type="password" id="password"
+                            placeholder="Enter your password" required>
+
+                        <button type="button" id="togglePassword">
+                            Show
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+                    <span class="forgot">Secure Login</span>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Sign In
+                </button>
+
+                <p id="message"></p>
+
+            </form>
+
+            <div class="login-footer">
+                Protected Employee Management Portal
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

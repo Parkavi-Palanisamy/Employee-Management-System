@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Edit Department</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9; color: #172554;
+        }
+        .edit-container {
+            max-width: 650px; margin: 55px auto;
+            padding: 32px; background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 22px rgba(15,23,42,.07);
+        }
+        h1 { margin: 0 0 8px; font-size: 26px; }
+        .subtitle { margin: 0 0 28px; color: #64748b; font-size: 14px; }
+        label {
+            display: block; margin: 18px 0 8px;
+            font-size: 13px; font-weight: 700; color: #334155;
+        }
+        input, textarea {
+            width: 100%; padding: 12px 13px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            font: inherit; font-size: 14px; outline: none;
+        }
+        textarea { resize: vertical; }
+        input:focus, textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+        .buttons {
+            display: flex; gap: 12px; margin-top: 25px;
+            padding-top: 22px; border-top: 1px solid #e2e8f0;
+        }
+        button, .cancel-btn {
+            display: inline-block; padding: 12px 20px;
+            border: 0; border-radius: 8px;
+            font-size: 14px; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+        }
+        button { background: #1d4ed8; color: white; }
+        button:hover { background: #1e40af; }
+        .cancel-btn { background: #e2e8f0; color: #334155; }
+        .cancel-btn:hover { background: #cbd5e1; }
+        @media(max-width: 600px) {
+            body { padding: 14px; }
+            .edit-container { margin: 25px auto; padding: 22px; }
+        }
+    </style>
+</head>
+<body>
+<div class="edit-container">
+    <h1>Edit Department</h1>
+    <p class="subtitle">Update department information and description.</p>
+
+    <form method="POST">
+        <label>Department Name *</label>
+        <input type="text" name="department_name"
+               value="{{ department.department_name }}" required>
+
+        <label>Description</label>
+        <textarea name="description" rows="5"
+                  placeholder="Enter department description">{{ department.description or '' }}</textarea>
+
+        <div class="buttons">
+            <button type="submit">Update Department</button>
+            <a href="{{ url_for('departments') }}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

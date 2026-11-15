@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report | EMS</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .btn-excel {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #15803d;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #b91c1c;
+        }
+
+        .btn-back {
+            background: white;
+            color: #172554;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+        }
+
+        .page-container {
+            max-width: 1350px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+            border-left: 5px solid #2563eb;
+            margin-bottom: 25px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .summary-card h2 {
+            font-size: 32px;
+            color: #172554;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+        }
+
+        .report-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .report-heading h2 {
+            color: #172554;
+            font-size: 19px;
+        }
+
+        .report-heading span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        thead {
+            background: #eff4ff;
+        }
+
+        th, td {
+            padding: 14px 13px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        th {
+            color: #334155;
+            font-weight: 700;
+        }
+
+        td {
+            color: #475569;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .employee-code {
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-absent {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-late {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-other {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 22px;
+            padding-bottom: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 22px 18px;
+            }
+
+            .page-container {
+                padding: 0 12px;
+                margin: 20px auto;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .report-card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div>
+            <h1>Attendance Report</h1>
+            <p>Employee attendance records and workday overview</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{{ url_for('export_attendance_report') }}"
+               class="btn btn-excel">
+                Download Excel
+            </a>
+
+            <a href="{{ url_for('export_attendance_pdf') }}"
+               class="btn btn-pdf">
+                Download PDF
+            </a>
+
+            <a href="{{ url_for('dashboard') }}"
+               class="btn btn-back">
+                Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="page-container">
+
+        <section class="summary-card">
+            <p>Total Attendance Records</p>
+            <h2>{{ total_records }}</h2>
+        </section>
+
+        <section class="report-card">
+
+            <div class="report-heading">
+                <h2>Attendance Details</h2>
+                <span>Complete Attendance Records</span>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Date</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td class="employee-code">
+                                {{ record.employee_code }}
+                            </td>
+
+                            <td>
+                                {{ record.first_name }}
+                                {{ record.last_name or '' }}
+                            </td>
+
+                            <td>{{ record.attendance_date }}</td>
+
+                            <td>{{ record.check_in or '-' }}</td>
+
+                            <td>{{ record.check_out or '-' }}</td>
+
+                            <td>
+                                {% if record.status == 'Present' %}
+                                    <span class="status status-present">
+                                        {{ record.status }}
+                                    </span>
+                                {% elif record.status == 'Absent' %}
+                                    <span class="status status-absent">
+                                        {{ record.status }}
+                                    </span>
+                                {% elif record.status == 'Late' %}
+                                    <span class="status status-late">
+                                        {{ record.status }}
+                                    </span>
+                                {% else %}
+                                    <span class="status status-other">
+                                        {{ record.status }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="empty-message">
+                                No attendance records found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <div class="footer">
+            Employee Management System | Attendance Report
+        </div>
+
+    </main>
+
+</body>
+</html>

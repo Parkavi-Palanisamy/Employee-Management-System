@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Leave Management</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #172554;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 { margin: 0 0 7px; font-size: 27px; }
+        h2 { margin: 0 0 22px; font-size: 19px; }
+
+        .subtitle {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #172554;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .back-link:hover { background: #1e40af; }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 13px;
+            box-shadow: 0 4px 18px rgba(15,23,42,.06);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea { resize: vertical; }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 10px 15px;
+            background: #1d4ed8;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover { background: #1e40af; }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            align-items: center;
+        }
+
+        .clear-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #e2e8f0;
+            color: #334155;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        th {
+            padding: 14px 12px;
+            background: #f1f5f9;
+            color: #334155;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        tbody tr:hover { background: #f8fafc; }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .pending { background: #fef3c7; color: #92400e; }
+        .approved { background: #dcfce7; color: #166534; }
+        .rejected { background: #fee2e2; color: #991b1b; }
+
+        .action-form {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+        }
+
+        .approve-btn { background: #15803d; }
+        .approve-btn:hover { background: #166534; }
+
+        .reject-btn { background: #dc2626; }
+        .reject-btn:hover { background: #b91c1c; }
+
+        .no-action { color: #94a3b8; }
+
+        .empty-row {
+            text-align: center;
+            padding: 25px;
+            color: #94a3b8;
+        }
+
+        @media(max-width: 800px) {
+            body { padding: 14px; }
+            .form-grid, .filter-grid { grid-template-columns: 1fr; }
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="page-header">
+        <div>
+            <h1>Leave Management</h1>
+            <p class="subtitle">Apply, review and manage employee leave requests.</p>
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <!-- Apply Leave -->
+    <div class="panel">
+        <h2>Apply Leave</h2>
+
+        <form method="POST" action="{{ url_for('add_leave') }}">
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>Employee *</label>
+                    <select name="employee_id" required>
+                        <option value="">Select Employee</option>
+                        {% for employee in employees %}
+                        <option value="{{ employee.employee_id }}">
+                            {{ employee.employee_code }} -
+                            {{ employee.first_name }} {{ employee.last_name or '' }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Leave Type *</label>
+                    <select name="leave_type" required>
+                        <option value="">Select Leave Type</option>
+                        <option value="Casual">Casual Leave</option>
+                        <option value="Sick">Sick Leave</option>
+                        <option value="Earned">Earned Leave</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Start Date *</label>
+                    <input type="date" name="start_date" required>
+                </div>
+
+                <div class="field">
+                    <label>End Date *</label>
+                    <input type="date" name="end_date" required>
+                </div>
+
+                <div class="field full-width">
+                    <label>Reason</label>
+                    <textarea name="reason" rows="3"
+                              placeholder="Enter leave reason"></textarea>
+                </div>
+
+            </div>
+
+            <div style="margin-top:20px;">
+                <button type="submit">Submit Leave Request</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Filter Leave Requests -->
+    <div class="panel">
+        <h2>Filter Leave Requests</h2>
+
+        <form method="GET" action="{{ url_for('leave_requests') }}">
+            <div class="filter-grid">
+
+                <div class="field">
+                    <label>Employee</label>
+                    <select name="employee_id">
+                        <option value="">All Employees</option>
+                        {% for employee in employees %}
+                        <option value="{{ employee.employee_id }}"
+                            {% if selected_employee|string == employee.employee_id|string %}selected{% endif %}>
+                            {{ employee.employee_code }} -
+                            {{ employee.first_name }} {{ employee.last_name or '' }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Leave Type</label>
+                    <select name="leave_type">
+                        <option value="">All Leave Types</option>
+                        <option value="Casual" {% if selected_leave_type == 'Casual' %}selected{% endif %}>Casual</option>
+                        <option value="Sick" {% if selected_leave_type == 'Sick' %}selected{% endif %}>Sick</option>
+                        <option value="Earned" {% if selected_leave_type == 'Earned' %}selected{% endif %}>Earned</option>
+                        <option value="Other" {% if selected_leave_type == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="">All Statuses</option>
+                        <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option value="Approved" {% if selected_status == 'Approved' %}selected{% endif %}>Approved</option>
+                        <option value="Rejected" {% if selected_status == 'Rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit">Apply Filter</button>
+                <a href="{{ url_for('leave_requests') }}" class="clear-link">Clear Filters</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Leave Records -->
+    <div class="panel">
+        <h2>Employee Leave Records</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Applied At</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ leave.leave_id }}</td>
+                        <td>
+                            {{ leave.employee_code }} -
+                            {{ leave.first_name }} {{ leave.last_name or '' }}
+                        </td>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.start_date }}</td>
+                        <td>{{ leave.end_date }}</td>
+                        <td>{{ leave.reason or '-' }}</td>
+                        <td>{{ leave.applied_at }}</td>
+
+                        <td>
+                            {% if leave.status == 'Pending' %}
+                                <span class="status pending">Pending</span>
+                            {% elif leave.status == 'Approved' %}
+                                <span class="status approved">Approved</span>
+                            {% else %}
+                                <span class="status rejected">Rejected</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if leave.status == 'Pending' %}
+                            <form method="POST"
+                                  action="{{ url_for('update_leave_status', leave_id=leave.leave_id) }}"
+                                  class="action-form">
+
+                                <button type="submit" name="status"
+                                        value="Approved" class="approve-btn">
+                                    Approve
+                                </button>
+
+                                <button type="submit" name="status"
+                                        value="Rejected" class="reject-btn">
+                                    Reject
+                                </button>
+                            </form>
+                            {% else %}
+                                <span class="no-action">No Action</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="empty-row">
+                            No leave requests found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

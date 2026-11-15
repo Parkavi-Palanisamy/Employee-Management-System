@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Edit Attendance</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9; color: #172554;
+        }
+        .edit-container {
+            max-width: 680px; margin: 45px auto;
+            padding: 32px; background: white;
+            border-radius: 14px;
+            box-shadow: 0 5px 22px rgba(15,23,42,.07);
+        }
+        h1 { margin: 0 0 8px; font-size: 26px; }
+        .subtitle { margin: 0 0 25px; color: #64748b; font-size: 14px; }
+        .field { margin-bottom: 19px; }
+        label {
+            display: block; margin-bottom: 8px;
+            font-size: 13px; font-weight: 700; color: #334155;
+        }
+        input, select {
+            width: 100%; padding: 12px 13px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            background: white; font-size: 14px; outline: none;
+        }
+        input:focus, select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+        .buttons {
+            display: flex; gap: 12px; margin-top: 25px;
+            padding-top: 22px; border-top: 1px solid #e2e8f0;
+        }
+        button, .cancel-btn {
+            display: inline-block; padding: 12px 20px;
+            border: 0; border-radius: 8px;
+            font-size: 14px; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+        }
+        button { background: #1d4ed8; color: white; }
+        button:hover { background: #1e40af; }
+        .cancel-btn { background: #e2e8f0; color: #334155; }
+        .cancel-btn:hover { background: #cbd5e1; }
+        @media(max-width: 600px) {
+            body { padding: 14px; }
+            .edit-container { margin: 25px auto; padding: 22px; }
+        }
+    </style>
+</head>
+<body>
+<div class="edit-container">
+    <h1>Edit Attendance</h1>
+    <p class="subtitle">Update employee attendance details.</p>
+
+    <form method="POST">
+        <div class="field">
+            <label>Employee *</label>
+            <select name="employee_id" required>
+                {% for employee in employees %}
+                <option value="{{ employee.employee_id }}"
+                    {% if employee.employee_id == record.employee_id %}selected{% endif %}>
+                    {{ employee.employee_code }} -
+                    {{ employee.first_name }} {{ employee.last_name or '' }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Attendance Date *</label>
+            <input type="date" name="attendance_date"
+                   value="{{ record.attendance_date.strftime('%Y-%m-%d') }}" required>
+        </div>
+
+        <div class="field">
+            <label>Check In</label>
+            <input type="time" name="check_in"
+                   value="{{ '%02d:%02d'|format(record.check_in.seconds // 3600, (record.check_in.seconds // 60) % 60) if record.check_in else '' }}">
+        </div>
+
+        <div class="field">
+            <label>Check Out</label>
+            <input type="time" name="check_out"
+                   value="{{ '%02d:%02d'|format(record.check_out.seconds // 3600, (record.check_out.seconds // 60) % 60) if record.check_out else '' }}">
+        </div>
+
+        <div class="field">
+            <label>Status *</label>
+            <select name="status" required>
+                {% for status in ['Present', 'Absent', 'Late', 'Half Day'] %}
+                <option value="{{ status }}"
+                    {% if record.status == status %}selected{% endif %}>
+                    {{ status }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="buttons">
+            <button type="submit">Update Attendance</button>
+            <a href="{{ url_for('attendance') }}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

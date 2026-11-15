@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Employee Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f6fc;
+            color: #1e293b;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 27px;
+            color: #172554;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            background: #ffffff;
+            color: #1e3a8a;
+            padding: 11px 18px;
+            border: 1px solid #dbe3f0;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #eaf0ff;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #e5eaf3;
+            border-radius: 13px;
+            padding: 26px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            font-size: 19px;
+            color: #172554;
+            margin-bottom: 6px;
+        }
+
+        .section-heading p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d7deea;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #3159c9;
+            box-shadow: 0 0 0 3px rgba(49, 89, 201, 0.10);
+        }
+
+        .submit-btn {
+            margin-top: 23px;
+            padding: 12px 23px;
+            background: #2448a8;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #19377f;
+        }
+
+        .table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            width: 280px;
+            max-width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #d7deea;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #3159c9;
+            box-shadow: 0 0 0 3px rgba(49, 89, 201, 0.10);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #e5eaf3;
+            border-radius: 9px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f0f4fc;
+            color: #334b80;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 15px 13px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 13px;
+            border-top: 1px solid #edf0f5;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: #f8faff;
+        }
+
+        .employee-name {
+            color: #172554;
+            font-weight: 600;
+        }
+
+        .employee-code {
+            color: #3159c9;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-inactive {
+            background: #fef3c7;
+            color: #a16207;
+        }
+
+        .status-resigned {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            display: inline-block;
+            padding: 7px 12px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #3159c9;
+        }
+
+        .edit-btn:hover {
+            background: #2448a8;
+        }
+
+        .delete-btn {
+            background: #dc4444;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        .delete-form {
+            display: inline;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .section-card {
+                padding: 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .table-top {
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div>
+            <h1>Employee Management</h1>
+            <p>Manage employee information and records</p>
+        </div>
+
+        <a href="{{ url_for('dashboard') }}" class="back-btn">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Add Employee Form -->
+    <section class="section-card">
+
+        <div class="section-heading">
+            <h2>Add New Employee</h2>
+            <p>Enter the employee details below to create a new record.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('add_employee') }}">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Employee Code *</label>
+                    <input type="text" name="employee_code" required>
+                </div>
+
+                <div class="form-group">
+                    <label>First Name *</label>
+                    <input type="text" name="first_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name">
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" name="phone" maxlength="15">
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select name="gender">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" name="date_of_birth">
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Joining *</label>
+                    <input type="date" name="date_of_joining" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" name="job_title">
+                </div>
+
+                <div class="form-group">
+                    <label>Department *</label>
+                    <select name="department_id" required>
+                        <option value="">Select Department</option>
+                        {% for department in departments %}
+                        <option value="{{ department.department_id }}">
+                            {{ department.department_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Employment Status</label>
+                    <select name="employment_status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Resigned">Resigned</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit" class="submit-btn">
+                + Add Employee
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- Employee List -->
+    <section class="section-card">
+
+        <div class="table-top">
+            <div class="section-heading" style="margin-bottom: 0;">
+                <h2>Employee Directory</h2>
+                <p>View and manage all employee records.</p>
+            </div>
+
+            <input
+                type="text"
+                id="searchInput"
+                class="search-box"
+                placeholder="Search employees..."
+                onkeyup="searchEmployees()"
+            >
+        </div>
+
+        <div class="table-wrapper">
+
+            <table id="employeeTable">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Job Title</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for employee in employees %}
+                    <tr>
+                        <td>{{ employee.employee_id }}</td>
+
+                        <td class="employee-code">
+                            {{ employee.employee_code }}
+                        </td>
+
+                        <td class="employee-name">
+                            {{ employee.first_name }}
+                            {{ employee.last_name or '' }}
+                        </td>
+
+                        <td>{{ employee.email }}</td>
+
+                        <td>
+                            {{ employee.department_name or 'Not Assigned' }}
+                        </td>
+
+                        <td>{{ employee.job_title or '-' }}</td>
+
+                        <td>
+                            {% if employee.employment_status == 'Active' %}
+                                <span class="status status-active">
+                                    Active
+                                </span>
+                            {% elif employee.employment_status == 'Inactive' %}
+                                <span class="status status-inactive">
+                                    Inactive
+                                </span>
+                            {% else %}
+                                <span class="status status-resigned">
+                                    {{ employee.employment_status }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a
+                                href="{{ url_for('edit_employee', employee_id=employee.employee_id) }}"
+                                class="edit-btn"
+                            >
+                                Edit
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('delete_employee', employee_id=employee.employee_id) }}"
+                                class="delete-form"
+                                onsubmit="return confirm('Are you sure you want to delete this employee?');"
+                            >
+                                <button type="submit" class="delete-btn">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="empty-message">
+                            No employees found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+function searchEmployees() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll("#employeeTable tbody tr");
+
+    rows.forEach(row => {
+        row.style.display =
+            row.innerText.toLowerCase().includes(filter) ? "" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

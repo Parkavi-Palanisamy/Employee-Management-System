@@ -1,0 +1,392 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Report | EMS</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f5f9;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 25px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 25px;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            transition: 0.2s;
+        }
+
+        .btn-excel {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #15803d;
+        }
+
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #b91c1c;
+        }
+
+        .btn-back {
+            background: white;
+            color: #172554;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+        }
+
+        .page-container {
+            max-width: 1450px;
+            margin: 30px auto;
+            padding: 0 25px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+            border-left: 5px solid #2563eb;
+            margin-bottom: 25px;
+        }
+
+        .summary-card p {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .summary-card h2 {
+            font-size: 32px;
+            color: #172554;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+        }
+
+        .report-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .report-heading h2 {
+            color: #172554;
+            font-size: 19px;
+        }
+
+        .report-heading span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        thead {
+            background: #eff4ff;
+        }
+
+        th, td {
+            padding: 14px 13px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        th {
+            color: #334155;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        td {
+            color: #475569;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .employee-code {
+            font-weight: 700;
+            color: #1d4ed8;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-approved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .status-other {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .leave-type {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .reason-cell {
+            min-width: 150px;
+            max-width: 250px;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 22px;
+            padding-bottom: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 22px 18px;
+            }
+
+            .page-container {
+                padding: 0 12px;
+                margin: 20px auto;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .report-card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div>
+            <h1>Leave Report</h1>
+            <p>Employee leave applications and approval overview</p>
+        </div>
+
+        <div class="header-actions">
+            <a href="{{ url_for('export_leave_report') }}"
+               class="btn btn-excel">
+                Download Excel
+            </a>
+
+            <a href="{{ url_for('export_leave_pdf') }}"
+               class="btn btn-pdf">
+                Download PDF
+            </a>
+
+            <a href="{{ url_for('dashboard') }}"
+               class="btn btn-back">
+                Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="page-container">
+
+        <section class="summary-card">
+            <p>Total Leave Records</p>
+            <h2>{{ total_records }}</h2>
+        </section>
+
+        <section class="report-card">
+
+            <div class="report-heading">
+                <h2>Leave Application Details</h2>
+                <span>Complete Leave Records</span>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Applied At</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in leave_records %}
+                        <tr>
+                            <td class="employee-code">
+                                {{ record.employee_code }}
+                            </td>
+
+                            <td>
+                                {{ record.first_name }}
+                                {{ record.last_name or '' }}
+                            </td>
+
+                            <td>
+                                <span class="leave-type">
+                                    {{ record.leave_type }}
+                                </span>
+                            </td>
+
+                            <td>{{ record.start_date }}</td>
+
+                            <td>{{ record.end_date }}</td>
+
+                            <td class="reason-cell">
+                                {{ record.reason or '-' }}
+                            </td>
+
+                            <td>
+                                {% if record.status == 'Pending' %}
+                                    <span class="status status-pending">
+                                        Pending
+                                    </span>
+                                {% elif record.status == 'Approved' %}
+                                    <span class="status status-approved">
+                                        Approved
+                                    </span>
+                                {% elif record.status == 'Rejected' %}
+                                    <span class="status status-rejected">
+                                        Rejected
+                                    </span>
+                                {% else %}
+                                    <span class="status status-other">
+                                        {{ record.status }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ record.applied_at }}</td>
+                        </tr>
+
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="empty-message">
+                                No leave records found.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <div class="footer">
+            Employee Management System | Leave Report
+        </div>
+
+    </main>
+
+</body>
+</html>

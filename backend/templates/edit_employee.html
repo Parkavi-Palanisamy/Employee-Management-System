@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMS | Edit Employee</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9; color: #172554;
+        }
+        .container {
+            max-width: 1050px; margin: 20px auto;
+            background: #fff; padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 5px 22px rgba(15,23,42,.07);
+        }
+        .header {
+            display: flex; justify-content: space-between;
+            align-items: center; gap: 15px;
+            padding-bottom: 22px; margin-bottom: 25px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        h1 { margin: 0 0 8px; font-size: 26px; }
+        .subtitle { margin: 0; color: #64748b; font-size: 14px; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+        .field label {
+            display: block; margin-bottom: 8px;
+            font-size: 13px; font-weight: 700; color: #334155;
+        }
+        input, select {
+            width: 100%; padding: 12px 13px;
+            border: 1px solid #cbd5e1; border-radius: 8px;
+            background: #fff; color: #1e293b; font-size: 14px;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+        }
+        .buttons {
+            display: flex; gap: 12px; margin-top: 28px;
+            padding-top: 22px; border-top: 1px solid #e2e8f0;
+        }
+        button, .cancel {
+            display: inline-block; padding: 12px 20px;
+            border: 0; border-radius: 8px;
+            font-size: 14px; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+        }
+        button { background: #1d4ed8; color: white; }
+        button:hover { background: #1e40af; }
+        .cancel { background: #e2e8f0; color: #334155; }
+        .cancel:hover { background: #cbd5e1; }
+        @media(max-width: 650px) {
+            body { padding: 14px; }
+            .container { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .header { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Edit Employee</h1>
+            <p class="subtitle">Update the employee's personal and employment details.</p>
+        </div>
+    </div>
+
+    <form method="POST">
+        <div class="form-grid">
+            <div class="field">
+                <label>Employee Code *</label>
+                <input type="text" name="employee_code" value="{{ employee.employee_code }}" required>
+            </div>
+            <div class="field">
+                <label>First Name *</label>
+                <input type="text" name="first_name" value="{{ employee.first_name }}" required>
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+                <input type="text" name="last_name" value="{{ employee.last_name or '' }}">
+            </div>
+            <div class="field">
+                <label>Email *</label>
+                <input type="email" name="email" value="{{ employee.email }}" required>
+            </div>
+            <div class="field">
+                <label>Phone</label>
+                <input type="tel" name="phone" maxlength="15" value="{{ employee.phone or '' }}">
+            </div>
+            <div class="field">
+                <label>Gender</label>
+                <select name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male" {% if employee.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if employee.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if employee.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Date of Birth</label>
+                <input type="date" name="date_of_birth"
+                    value="{{ employee.date_of_birth.strftime('%Y-%m-%d') if employee.date_of_birth else '' }}">
+            </div>
+            <div class="field">
+                <label>Date of Joining *</label>
+                <input type="date" name="date_of_joining"
+                    value="{{ employee.date_of_joining.strftime('%Y-%m-%d') if employee.date_of_joining else '' }}" required>
+            </div>
+            <div class="field">
+                <label>Job Title</label>
+                <input type="text" name="job_title" value="{{ employee.job_title or '' }}">
+            </div>
+            <div class="field">
+                <label>Department *</label>
+                <select name="department_id" required>
+                    <option value="">Select Department</option>
+                    {% for department in departments %}
+                    <option value="{{ department.department_id }}"
+                        {% if employee.department_id == department.department_id %}selected{% endif %}>
+                        {{ department.department_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="field">
+                <label>Employment Status</label>
+                <select name="employment_status">
+                    {% for status in ['Active', 'Inactive', 'Resigned'] %}
+                    <option value="{{ status }}"
+                        {% if employee.employment_status == status %}selected{% endif %}>
+                        {{ status }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="buttons">
+            <button type="submit">Update Employee</button>
+            <a href="{{ url_for('employees') }}" class="cancel">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

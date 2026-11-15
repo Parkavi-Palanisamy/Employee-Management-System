@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Payroll | EMS</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f3f5f9;
+            padding: 40px 20px;
+            color: #1e293b;
+        }
+
+        .page-container {
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .top-header {
+            margin-bottom: 25px;
+        }
+
+        .top-header h1 {
+            font-size: 27px;
+            color: #172554;
+            margin-bottom: 7px;
+        }
+
+        .top-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        input:focus, select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            padding: 12px 22px;
+            border-radius: 7px;
+            border: none;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .form-card {
+                padding: 22px 17px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-container">
+
+        <div class="top-header">
+            <h1>Edit Payroll Details</h1>
+            <p>Update employee salary and payroll information.</p>
+        </div>
+
+        <div class="form-card">
+
+            <form method="POST"
+                  action="{{ url_for('edit_payroll', payroll_id=record.payroll_id) }}">
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+                        <label>Employee</label>
+                        <select name="employee_id" required>
+                            {% for employee in employees %}
+                                <option value="{{ employee.employee_id }}"
+                                    {% if employee.employee_id == record.employee_id %}selected{% endif %}>
+                                    {{ employee.employee_code }} -
+                                    {{ employee.first_name }} {{ employee.last_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pay Month</label>
+                        <select name="pay_month" required>
+                            {% for month in range(1, 13) %}
+                                <option value="{{ month }}"
+                                    {% if month == record.pay_month %}selected{% endif %}>
+                                    {{ month }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pay Year</label>
+                        <input type="number"
+                               name="pay_year"
+                               value="{{ record.pay_year }}"
+                               min="2000"
+                               max="2100"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Basic Salary (₹)</label>
+                        <input type="number"
+                               name="basic_salary"
+                               step="0.01"
+                               value="{{ record.basic_salary }}"
+                               min="0"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Allowances (₹)</label>
+                        <input type="number"
+                               name="allowances"
+                               step="0.01"
+                               value="{{ record.allowances }}"
+                               min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Deductions (₹)</label>
+                        <input type="number"
+                               name="deductions"
+                               step="0.01"
+                               value="{{ record.deductions }}"
+                               min="0">
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        Update Payroll
+                    </button>
+
+                    <a href="{{ url_for('payroll') }}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
